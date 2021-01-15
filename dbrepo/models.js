@@ -32,6 +32,7 @@ process.on("SIGINT", function(){
 var userSchema = new mongoose.Schema({
     "name": String,
     "email": String,
+    "phone": String,
     "password": String,
     "createdOn": { "type": Date,  "default": Date.now},
     "activeSince": Date

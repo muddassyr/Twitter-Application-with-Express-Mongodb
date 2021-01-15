@@ -80,6 +80,11 @@ body {
     margin-bottom: 20px;
     
 }
+.log{
+	font-size: 25px;
+	font-weight: bold;
+
+}
 .fs-subtitle {
 	font-weight: normal;
 	font-size: 13px;

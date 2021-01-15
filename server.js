@@ -23,6 +23,7 @@ app.use(cors({
     credentials: true
 }))
 
+app.use("/",express.static(path.resolve(path.join(__dirname,"public"))));
 
 app.use("/auth", authRoutes)
 // app.use("/", authRoutes)
@@ -49,6 +50,7 @@ app.use(function (req, res, next) {
                     id: decodedData.id,
                     name: decodedData.name,
                     email: decodedData.email,
+                    phone: decodedData.phone,
                 }, SERVER_SECRET)
                 res.cookie('jToken', token, {
                     maxAge: 86_400_000,
@@ -68,7 +70,7 @@ app.use(function (req, res, next) {
 app.get("/profile", (req, res, next) => {
     console.log(req.body)
 
-    userModel.findById(req.body.jToken.id, 'name email createdOn',
+    userModel.findById(req.body.jToken.id, 'name email phone createdOn',
         function (err, doc) {
             if (!err) {
                 res.send({

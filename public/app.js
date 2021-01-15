@@ -1,27 +1,35 @@
-var url = "http://localhost:5000";
 
-function signin(){
+const url = "http://localhost:5000";
+
+// var url = "http://localhost:5000";
+
+function signUp(){
     var name = document.getElementById("name").value;
-    var email = document.getElementById("email").value;
+    // console.log(name);
+    var email = document.getElementById("email").value.toLowerCase();
     var phone = document.getElementById("phone").value;
     var password = document.getElementById("password").value;
 
     let user = {
         name: name,
-        emai: email,
+        email: email,
         phone: phone,
         password: password
     }
+    console.log(user);
+
 
     const Http = new XMLHttpRequest();
     Http.open("POST", url + "/auth/signup");
     Http.setRequestHeader("Content-Type", "application/json");
     Http.send(JSON.stringify(user));
+
     Http.onreadystatechange = (e) => {
 
         if (Http.readyState === 4) {
             let jsonRes = JSON.parse(Http.responseText)
             console.log(Http.status);
+            console.log(jsonRes);
             if (Http.status === 200) {
                 alert(jsonRes.message);
                 window.location.href = "login.html";
@@ -30,25 +38,46 @@ function signin(){
                 alert(jsonRes.message);
             }
 
-
-
         }
     }
     return false;
+
+
+    // axios({
+    //     method: 'post',
+    //     url: 'http://localhost:5000/signup',
+    //     data: {
+    //         name: document.getElementById('name').value,
+    //         email: document.getElementById('email').value,
+    //         password: document.getElementById('password').value,
+    //         phone: document.getElementById('phone').value,
+    //     },
+    //     withCredentials: true
+    // }).then((response) => {
+    //     if (response.data.status === 200) {
+    //         alert(response.data.message)
+    //         location.href = "./login.html"
+    //     } else {
+    //         alert(response.data.message);
+    //     }
+    // }).catch((error) => {
+    //     console.log(error);
+    // });
+    // return false
 }
 
-function login(){
-    var userEmail = document.getElementById("email").value.toLowerCase();
-    var userPassword = document.getElementById("password").value
+function logIn(){
+
+    var email = document.getElementById("email").value.toLowerCase();
+    var password = document.getElementById("password").value
 
     user = {
-        userEmail: userEmail,
-        userPassword: userPassword,
+        email: email,
+        password: password,
     }
-    // console.log(user);
+    console.log(user);
 
     const Http = new XMLHttpRequest();
-
     Http.open("POST", url + "/auth/login");
     Http.setRequestHeader("Content-Type", "application/json");
     Http.send(JSON.stringify(user));

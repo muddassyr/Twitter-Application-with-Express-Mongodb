@@ -8,7 +8,6 @@ var { SERVER_SECRET } = require("../core/index")
 // var client = new postmark.Client("ENTER YOUR POSTMARK TOKEN") 
 var client = new postmark.Client("78f129ec-7f98-474a-a27b-5c702452ac2b") 
 
-
 var { userModel, optModel } = require("../dbrepo/models");
 console.log("userModels: ", userModel)
 
@@ -19,6 +18,7 @@ router.post("/signup", (req, res, next) => {
     if (
         !req.body.name
         || !req.body.email
+        || !req.body.phone
         || !req.body.password
     ) {
 
@@ -28,12 +28,12 @@ router.post("/signup", (req, res, next) => {
             {
                 "name": "khan",
                 "email": "khan@gmail.com",
+                "phone": "123456789",
                 "password": "abc",
             }`)
         return;
     }
-
-
+    console.log(req.body);
     userModel.findOne({ email: req.body.email },
         function (err, doc) {
             if (!err && !doc) {
@@ -41,6 +41,7 @@ router.post("/signup", (req, res, next) => {
                     var newUser = new userModel({
                         "name": req.body.name,
                         "email": req.body.email,
+                        "phone": req.body.phone,
                         "password": hash,
                     })
 
@@ -139,7 +140,8 @@ router.post("/login", (req, res, next) => {
                     message: "user not found"
                 })
             }
-        })
+        }
+    )
 })
 
 
