@@ -1,6 +1,6 @@
 var url = "http://localhost:5000";
 
-function signUp(){
+function signin(){
     var name = document.getElementById("name").value;
     var email = document.getElementById("email").value;
     var phone = document.getElementById("phone").value;
@@ -16,7 +16,7 @@ function signUp(){
     const Http = new XMLHttpRequest();
     Http.open("POST", url + "/auth/signup");
     Http.setRequestHeader("Content-Type", "application/json");
-    Http.send(JSON.stringify(obj));
+    Http.send(JSON.stringify(user));
     Http.onreadystatechange = (e) => {
 
         if (Http.readyState === 4) {
@@ -41,17 +41,17 @@ function login(){
     var userEmail = document.getElementById("email").value.toLowerCase();
     var userPassword = document.getElementById("password").value
 
-    obj = {
+    user = {
         userEmail: userEmail,
         userPassword: userPassword,
     }
-    // console.log(obj);
+    // console.log(user);
 
     const Http = new XMLHttpRequest();
 
     Http.open("POST", url + "/auth/login");
     Http.setRequestHeader("Content-Type", "application/json");
-    Http.send(JSON.stringify(obj));
+    Http.send(JSON.stringify(user));
 
     Http.onreadystatechange = (e) => {
         if (Http.readyState === 4) {
