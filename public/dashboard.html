@@ -1,18 +1,191 @@
-!<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
+
 <head>
     <meta charset="UTF-8">
+    <title>Twitter</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" type="text/css" href="css/animate.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/line-awesome.css">
+    <link rel="stylesheet" type="text/css" href="css/line-awesome-font-awesome.min.css">
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" type="text/css" href="lib/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/responsive.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="socket.io.js"></script>
 
 </head>
+
+<!-- <body onload="getProfile()"> -->
+<!-- <body  onload="getTweets()"> -->
 <body>
- 
-  
-    
+    <div class="wrapper">
+        <header>
+            <div class="container">
+                <div class="header-data">
+                    <div class="logo">
+                        <a href="dashboard.html" title=""><img src="images/logo.png" alt=""></a>
+                    </div>
+                    <div class="search-bar">
+                        <form>
+                            <input type="text" name="search" placeholder="Search...">
+                            <button type="submit"><i class="la la-search"></i></button>
+                        </form>
+                    </div>
+                    <nav>
+                        <ul>
+                            <li>
+                                <a href="dashboard.html" title="">
+                                    <span><img src="images/icon1.png" alt=""></span>
+                                    Home
+                                </a>
+                            </li>
+                            <li>
+                                <!-- <button onclick="logout()">
+                                    Logout
+                                </button> -->
+                                <a onclick="logout()" href="#" title="">
+                                    <span><i class="fa fa-sign-out" aria-hidden="true"></i></span>
+                                    Logout
+                                </a>
+                            </li>
+
+
+                        </ul>
+
+                    </nav>
+                    <div class="menu-btn">
+                        <a href="#" title=""><i class="fa fa-bars"></i></a>
+                    </div>
+                    <!-- <div class="user-account">
+                        <div class="user-info">
+                            <img src="images/user.png" alt="">
+                            <a href="#" title="">John</a>
+                            <i class="la la-sort-down"></i>
+                        </div>
+                      
+                    </div> -->
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="main-section">
+                <div class="container">
+                    <div class="main-section-data">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 pd-left-none no-pd">
+                                <div class="main-left-sidebar no-margin">
+                                    <div class="user-data full-width">
+                                        <div class="user-profile">
+                                            <div class="username-dt">
+                                                <div class="usr-pic">
+                                                    <!-- <img src="images/user-pic.png" alt=""> -->
+                                                    <img src="images/profilePic.PNG" alt="">
+                                                </div>
+                                            </div>
+                                            <div class="user-specs">
+                                                <h3 id="resUserName"></h3>
+                                                <span>Web Developer</span>
+                                            </div>
+                                        </div>
+                                        <ul class="user-fw-status">
+                                            <li>
+                                                <h4>Following</h4>
+                                                <span>34</span>
+                                            </li>
+                                            <li>
+                                                <h4>Followers</h4>
+                                                <span>155</span>
+                                            </li>
+                                            <li>
+                                                <a href="#" title="">View Profile</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-8 no-pd">
+                                <div class="main-ws-sec">
+                                    <div class="post-topbar">
+                                        <div class="user-picy">
+                                            <!-- <img src="images/user-pic.png" alt=""> -->
+                                            <img src="images/smallprofile.PNG" alt="">
+                                        </div>
+                                        <div class="post-st " style="margin-right: 40px; ">
+                                            <div class="input-group input-group-lg">
+                                                <input id="userPost" type="text" class="form-control" placeholder="What's happening"
+                                                    aria-label="Sizing example input"
+                                                    aria-describedby="inputGroup-sizing-lg"
+                                                    style="margin-right: 30px; ">
+                                                <!-- <button type="button" style=" border: 1 px solid #E44D3A;" class="btn btn-outline-dark">Tweet</button> -->
+                                                <button class="btn btn-primary"
+                                                    style="background-color: #E44D3A; border:  2px solid #E44D3A;"
+                                                     onclick="return post()">Tweet</button>
+                                            </div>
+                                            <div class="posts__container">
+
+                                                <ul id="posts">
+                                        
+                                                </ul>
+                                                <div id="myPost">
+                                                </div>
+                                              </div>
+                                        </div>
+                                        <!-- <div class="post-st">
+                                            <ul>
+                                                <li><a class="post_project" href="#" title="">Post a Project</a></li>
+                                                <li><a class="post-jb active" href="#" title="">Post a Job</a></li>
+                                            </ul>
+                                        </div> -->
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="tags-sec full-width">
+                                <ul>
+                                    <li><a href="#" title="">Help Center</a></li>
+                                    <li><a href="#" title="">About</a></li>
+                                    <li><a href="#" title="">Privacy Policy</a></li>
+                                    <li><a href="#" title="">Community Guidelines</a></li>
+                                    <li><a href="#" title="">Cookies Policy</a></li>
+                                    <li><a href="#" title="">Career</a></li>
+                                    <li><a href="#" title="">Language</a></li>
+                                    <li><a href="#" title="">Copyright Policy</a></li>
+                                </ul>
+                                <div class="cp-sec">
+                                    <!-- <img src="images/logo2.png" alt=""> -->
+                                    <p><img src="images/cp.png" alt="">Copyright 2021</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+    <script src="app.js">
+       
+    </script>
 </body>
-<script src="app.js"></script>
+
+<script>
+     console.log('on loaded')
+            var user = localStorage.getItem('current_user')
+            console.log(user)
+            document.getElementById('resUserName').innerHTML = JSON.parse(user).name
+</script>
+
 </html>

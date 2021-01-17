@@ -156,7 +156,6 @@ router.post("/forgot-password", (req, res, next) => {
         e.g:
         {
             "email": khan@gamil.com
-
         }
         `)
         return;
@@ -186,7 +185,12 @@ router.post("/forgot-password", (req, res, next) => {
                     }).then((status) => {
 
                         console.log("status", status);
-                        res.send("email send with otp")
+                        // res.send("email send with otp")
+                        res.status(200).send(
+                            {
+                                message: "email sent with otp"
+                            }
+                        )
 
                     })
                 }).catch((err) => {
@@ -206,93 +210,88 @@ router.post("/forgot-password", (req, res, next) => {
 
 
 
+// router.post("/forgot-password-step-2", (req, res, next) => {
 
-
-// router.post("/forgot-password-step-2", (req, res, next) =>{
-
-
-//     if(!req.body.email && !req.body.newPassword && !req.body.opt){
+//     if (!req.body.email && !req.body.otp && !req.body.newPassword) {
 
 //         res.status(403).send(`
-//         Please send email, Otp and new password in json body
-//         e.g:
-//         {
-//             "email": khan@gamil.conm,
-//             "Otp": xxxxx,
-//             "new Password": xxxxxxxx
-//         }
-//         `)
+//             please send email & otp in json body.
+//             e.g:
+//             {
+//                 "email": "khan@gmail.com",
+//                 "otp": "xxxxx", 
+//                 "newPassword": "xxxxxx"
+//             }`)
 //         return;
-
 //     }
 
-//     userModel.findOne({ email : req.body.email},
-//         function(err, user){
-//             if(err){
+//     userModel.findOne({ email: req.body.email },
+//         function (err, user) {
+//             if (err) {
 //                 res.status(500).send({
-//                     message: " An error occured: " + JSON.stringify(err)
-//                 })
-//             }else if(user){
-//                 optModel.find({email: req.body.email}, {
-//                     function (err, optData) {
+//                     message: "an error occured: " + JSON.stringify(err)
+//                 });
+//             } else if (user) {
 
-//                         if(err){
+//                 optModel.find({ email: req.body.email },
+//                     function (err, otpData) {
+//                         if (err) {
 //                             res.status(500).send({
-//                                 message: "An error occured: " + JSON.stringify(err)
+//                                 message: "an error occured: " + JSON.stringify(err)
 //                             });
-//                         }else if(optData){
-//                             optData = optData[optData.lenght - 1]
+//                         } else if (otpData) {
+//                             console.log("otpData: ", otpData);
+//                             otpData = otpData[otpData.length - 1]
 
-//                             console.log("optData", optData);
 
 //                             const now = new Date().getTime();
-//                             const otpIat = new Date(otpData.creatOn).getTime();
-//                             const diff = now - otpIat;
+//                             const otpIat = new Date(otpData.createdOn).getTime(); // 2021-01-06T13:08:33.657+0000
+//                             const diff = now - otpIat; // 300000 5 minute
 
-//                             console.log("diff", diff);
+//                             console.log("diff: ", diff);
 
-
-//                             if(otpData.optCode === req.body.otp && diff < 300000){
+//                             if (otpData.optCode === req.body.otp && diff < 300000) { // correct otp code
 //                                 otpData.remove()
-
-//                                 bcrypt.stringToHash(req.body.newPassword).then(function(hash){
-//                                     user.update({ password: hash}, {}, function (err, data) {
-//                                         res.send("password updated")
+//                                 console.log('jkdafd', otpData)
+//                                 bcrypt.stringToHash(req.body.newPassword).then(function (hash) {
+//                                     user.update({ password: hash }, {}, function (err, data) {
+//                                         res.status(200).send({
+//                                             message: "password updated",
+//                                         });
 //                                     })
 //                                 })
-//                             }else{
+
+//                             } else {
 //                                 res.status(401).send({
 //                                     message: "incorrect otp"
-//                                 })
+//                                 });
 //                             }
-                        
-//                         }else{
+//                         } else {
 //                             res.status(401).send({
 //                                 message: "incorrect otp"
-//                             })
+//                             });
 //                         }
-                        
-//                     }
-//                 })
-//             }else{
+//                     })
+
+
+//             } else {
 //                 res.status(403).send({
 //                     message: "user not found"
-//                 })
+//                 });
 //             }
-//         }
-//         )
+//         });
 // })
+
 
 
 router.post("/forgot-password-step-2", (req, res, next) => {
 
     if (!req.body.email && !req.body.otp && !req.body.newPassword) {
-
         res.status(403).send(`
             please send email & otp in json body.
             e.g:
             {
-                "email": "khan@gmail.com",
+                "email": "malikasinger@gmail.com",
                 "newPassword": "xxxxxx",
                 "otp": "xxxxx" 
             }`)
@@ -307,10 +306,8 @@ router.post("/forgot-password-step-2", (req, res, next) => {
                 });
             } else if (user) {
 
-                optModel.find({ email: req.body.email },
+                optModel.find({ optCode: req.body.otp },
                     function (err, otpData) {
-
-                        
 
                         if (err) {
                             res.status(500).send({
@@ -320,19 +317,22 @@ router.post("/forgot-password-step-2", (req, res, next) => {
                             otpData = otpData[otpData.length - 1]
 
                             console.log("otpData: ", otpData);
-
+                            console.log("otp body code " , req.body.otp)
                             const now = new Date().getTime();
                             const otpIat = new Date(otpData.createdOn).getTime(); // 2021-01-06T13:08:33.657+0000
                             const diff = now - otpIat; // 300000 5 minute
 
                             console.log("diff: ", diff);
 
-                            if (otpData.otpCode === req.body.otp && diff < 300000) { // correct otp code
+                            if (otpData.optCode === req.body.otp && diff < 300000000000000) { // correct otp code
                                 otpData.remove()
 
                                 bcrypt.stringToHash(req.body.newPassword).then(function (hash) {
                                     user.update({ password: hash }, {}, function (err, data) {
                                         res.send("password updated");
+                                        // res.status(200).send({
+                                        //     message: "password updated",
+                                        // });
                                     })
                                 })
 
@@ -355,6 +355,7 @@ router.post("/forgot-password-step-2", (req, res, next) => {
             }
         });
 })
+
 router.post("/logout", (req, res, next) => {
     res.cookie('jToken', "", {
         maxAge: 86_400_000,

@@ -2,8 +2,12 @@
 const url = "http://localhost:5000";
 
 // var url = "http://localhost:5000";
+var socket = io(url);
 
-function signUp(){
+socket.on('connect', function () {
+    console.log("I am connected");
+});
+function signUp() {
     var name = document.getElementById("name").value;
     // console.log(name);
     var email = document.getElementById("email").value.toLowerCase();
@@ -66,7 +70,7 @@ function signUp(){
     // return false
 }
 
-function logIn(){
+function logIn() {
 
     var email = document.getElementById("email").value.toLowerCase();
     var password = document.getElementById("password").value
@@ -86,10 +90,18 @@ function logIn(){
         if (Http.readyState === 4) {
             console.log(Http.responseText);
             let jsonRes = JSON.parse(Http.responseText);
+            console.log(jsonRes)
+            console.log("name ", jsonRes.user.name)
+            // console.log("name ",jsonRes.name)
 
             if (Http.status === 200) {
                 alert(jsonRes.message);
-                window.location.href="dashboard.html";
+                localStorage.setItem('current_user', JSON.stringify(jsonRes.user))
+                window.location.href = "dashboard.html";
+                // console.log(jsonRes.user.name)
+                // console.log(document.getElementById('resUserName'))
+                // document.getElementById("resUserName").innerHTML = jsonRes.user.name;
+
             }
             else {
                 alert(jsonRes.message);
@@ -98,4 +110,176 @@ function logIn(){
         }
     }
     return false;
+}
+
+// function getProfile(){
+//     console.log("jdshffjds");
+//     axios({
+
+//         method: 'get',
+//         // url: "http://localhost:5000/profile",
+//         // url: "/profile",
+//         url: url+"/profile",
+
+//     }).then((response) => {
+//         console.log(response.data);
+//         console.log("sakjfddsjfkjdlkldj",response.data);
+//         document.getElementById('resUserName').innerHTML = response.data.profile.name
+//         getTweets();
+//     }, (error) => {
+//         console.log(error.message);
+//         // window.location.href = "./login.html"
+//         console.log("this is error",error);
+//     });
+
+// }
+
+const post = () => {
+
+    // let tweetText = document.getElementById("userPost").value;
+    // const Http = new XMLHttpRequest();
+    // Http.open("POST", url + "/postTweets");
+    // Http.setRequestHeader("Content-Type", "application/json");
+
+    // // Http.send(JSON.stringify(user));
+    // Http.send(JSON.stringify({
+    //     // email: email,
+    //     tweetText: tweetText,
+    // }));
+
+    // Http.onreadystatechange = (e) => {
+    //     if (Http.readyState === 4) {
+    //         jsonRes = JSON.parse((Http.responseText));
+    //         console.log("posted success");
+    //         document.getElementById("userPost").innerHTML = "";
+    //     }
+    // }
+    axios({
+        method: 'post',
+        url: url + "/postTweets",
+        data1: {
+            //  email : document.getElementById("email").value,
+            tweetText: document.getElementById("userPost").value,
+
+        }
+    }).then((response) => {
+        console.log("posted success", response);
+        document.getElementById("userPost").innerHTML = "";
+    }, (error) => {
+        console.log(error);
+    });
+    return false;
+}
+
+const getTweets = () => {
+
+
+    const Http = new XMLHttpRequest();
+    Http.open("GET", url + "/getTweets");
+    Http.send();
+    Http.onreadystatechange = (e) => {
+        if (Http.readyState === 4) {
+
+            let data = JSON.parse((Http.responseText));
+            console.log(data);
+            for (let i = 0; i < data.tweets.length; i++) {
+
+
+                var eachTweet = document.createElement("li");
+                eachTweet.innerHTML =
+                    `<h4 class="userName">
+                    ${data.tweets[i].name}
+                </h4> 
+                <p class="userPost">
+                    ${data.tweets[i].tweetText}
+                </p>`;
+                // console.log(`User: ${tweets[i]} ${tweets[i].userPosts[j]}`)
+                document.getElementById("posts").appendChild(eachTweet)
+
+            }
+        }
+    }
+}
+
+socket.on("NEW_POST", (newPost) => {
+
+
+    console.log("newPost ==> ", newPost);
+    var eachTweet = document.createElement("li");
+    eachTweet.innerHTML =
+        `<h4 class="userName">
+        ${newPost.name}
+    </h4> 
+    <p class="userPost">
+        ${newPost.tweetText}
+    </p>`;
+    // console.log(`User: ${tweets[i]} ${tweets[i].userPosts[j]}`)
+    document.getElementById("posts").appendChild(eachTweet)
+})
+
+
+
+
+function passForgot() {
+
+    console.log("hggjghgh")
+
+    axios({
+        method: 'post',
+        url: url + "/auth/forgot-password",
+        // email : document.getElementById("email").value,
+
+        data: {
+            email: document.getElementById("email").value,
+        }
+    }).then((response) => {
+        document.getElementById("forgotPassRes").style.display = "initial";
+        document.getElementById("forgotPassRes").innerHTML = JSON.stringify(response.message);
+        alert(JSON.stringify(response.message));
+        localStorage.setItem("forgot_email", document.getElementById("email").value);
+        window.location.href = "forgot_password_sterp_2.html";
+    }, (error) => {
+        console.log(error);
+    });
+    return false;
+}
+
+
+
+function newPassword() {
+
+    console.log("hdjfahfj")
+
+
+    const Http = new XMLHttpRequest();
+    Http.open("POST", url + "/auth/forgot-password-step-2")
+    Http.setRequestHeader("Content-Type", "application/json");
+    Http.send(JSON.stringify({
+        email: document.getElementById("email").value.toLowerCase(),
+        newPassword: document.getElementById("newPassword").value,
+        otp: document.getElementById("otp").value,
+    }))
+    Http.onreadystatechange = (e) => {
+        // console.log(Http.readyState);
+
+        if (Http.readyState === 4) {
+            alert(Http.responseText);
+        }
+
+    }
+
+    return false;
+
+}
+
+function logout() {
+    // let logout = () => {
+
+    axios({
+        method: "post",
+        url: url + "/auth/logout",
+    }).then((response) => {
+        alert(response.data);
+        window.location.href = "login.html";
+    })
 }

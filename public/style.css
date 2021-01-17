@@ -77,8 +77,12 @@ body {
 	text-transform: uppercase;
 	/* color: #2C3E50; */
 	color: white;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     
+}
+.heading5{
+    margin-bottom: 20px;
+
 }
 .log{
 	font-size: 25px;

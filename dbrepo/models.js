@@ -48,7 +48,28 @@ var optSchema = new mongoose.Schema({
 
 var optModel = mongoose.model("opta" , optSchema);
 
+
+var tweetsSchema = new mongoose.Schema({
+    "email": String,
+    "tweetText": String,
+    "name": String,
+    "createdOn": { "type": Date, "default": Date.now}
+})
+
+var tweetsModel = mongoose.model("tweets" , tweetsSchema);
+
+// var tweetsSchema = new mongoose.Schema({
+//     "email" : String,
+//     "tweetText" : String,
+//     "name" : String,
+//     // "createdOn": { "type": Date, "default": Date.now}
+// })
+
+// var tweetsModel = mongoose.model("tweets" . tweetsSchema)
+
 module.exports = {
     userModel: userModel,
-    optModel : optModel
+    optModel : optModel,
+    tweetsModel : tweetsModel,
+
 }
