@@ -10,7 +10,7 @@ var socketIo = require("socket.io");
 var path = require('path')
 var http = require("http");
 
-var { userModel , tweetsModel } = require("./dbrepo/models")
+var { userModel, tweetsModel } = require("./dbrepo/models")
 var authRoutes = require("./routes/auth")
 var { SERVER_SECRET } = require("./core/index")
 
@@ -22,7 +22,7 @@ var server = http.createServer(app);
 var io = socketIo(server);
 
 io.on("connection", (user) => {
-    console.log("user connected" , user);
+    console.log("user connected", user);
     io.emit("Testing");
 })
 
@@ -34,7 +34,7 @@ app.use(cors({
     credentials: true
 }))
 
-app.use("/",express.static(path.resolve(path.join(__dirname,"public"))));
+app.use("/", express.static(path.resolve(path.join(__dirname, "public"))));
 
 app.use("/auth", authRoutes)
 // app.use("/", authRoutes)
@@ -96,6 +96,26 @@ app.get("/profile", (req, res, next) => {
         })
 })
 
+// var tweetsS = []
+
+
+// app.post("/postTweets", (req, res, next) => {
+
+//     tweetsS.push({
+//         userName: req.body.userName,
+//         tweetText: req.body.tweetText,
+//     })
+//     res.send(tweets);
+                                           
+//     io.emit("NEW_POST", JSON.stringify(tweetsS[tweetsS.length - 1]))
+// })
+
+// app.get("/tweets", (req, res, next) => {
+//     res.send(tweetsS);
+// });
+
+
+
 
 app.post("/postTweets", (req, res, next) => {
 
@@ -109,52 +129,100 @@ app.post("/postTweets", (req, res, next) => {
 
         return;
     };
-    userModel.findById(req.body.jToken.id, 'name email',
-        (err, user) => {
-            if (!err) {
-                console.log("tweet user : " + user);
-                tweetsModel.create({
-                    // email: req.body.email,
-                    tweetText: req.body.tweetText,
-                    name : user.name,
-                    email : user.email,
-                }).then((data) => {
+    userModel.findById(req.body.jToken.id, 'name email tweetText', (err, user) => {
+        if (!err) {
+            console.log("tweet user : " + user);
+            var newTweet = new tweetsModel({
+                tweetText: req.body.tweetText,
+                name: user.name,
+                email: user.email,
+            })
+
+            newTweet.save((err, data) => {
+                if (!err) {
                     console.log("Tweet created: " + data),
                         res.status(200).send({
-                            message: "tweet created",
+                            // message: "tweet created",
+                            mytweet: data.tweetText,
                             name: user.name,
                             email: user.email,
+                            
+                        }).catch((err) => {
+                            res.status(500).send({
+                                message: "an error occured : " + err,
+                            });
+                            io.emit("NEW_POST" , data);
                         });
-                        io.emit("NEW_POST" , data);
-                }).catch((err) => {
+                } else {
+                    console.log(err)
                     res.status(500).send({
-                        message: "an error occured : " + err,
-                    });
-                });
-            }
-            else {
-                res.status(403).send({
-                    message: "an error occured" + err,
-                })
-            }
-        })
+                        message: "user created error, " + err
+                    })
+                }
+            });
+        }
+        else {
+            res.status(403).send({
+                message: "an error occured" + err,
+            })
+        }
+    })
+
+
+
+
+
+//     // userModel.findById(req.body.jToken.id, 'name email',
+//     //     (err, user) => {
+//     //         if (!err) {
+//     //             console.log("tweet user : " + user);
+//     //             tweetsModel.create({
+//     //                 // email: req.body.email,
+//     //                 tweetText: req.body.tweetText,
+//     //                 name : user.name,
+//     //                 email : user.email,
+//     //             }).then((data) => {
+//     //                 console.log("Tweet created: " + data),
+//     //                     res.status(200).send({
+//     //                         // message: "tweet created",
+//     //                         mytweet: data.tweetText,
+//     //                         name: user.name,
+//     //                         email: user.email,
+//     //                     });
+//     //                     io.emit("NEW_POST" , data);
+//     //             }).catch((err) => {
+//     //                 res.status(500).send({
+//     //                     message: "an error occured : " + err,
+//     //                 });
+//     //             });
+//     //         }
+//     //         else {
+//     //             res.status(403).send({
+//     //                 message: "an error occured" + err,
+//     //             })
+//     //         }
+//     //     })
+
+
+
+
+
 });
 
 app.get("/getTweets", (req, res, next) => {
 
-  tweetsModel.find({},(err,data)=>{
-    if(!err)
-    {
-        console.log("tweet data=>",data);
-        res.status(200).send({
-            tweets : data,
-        });
-    }
-    else{
-        console.log("error : ",err);
-        res.status(500).send("error");
-    }
-  })
+    tweetsModel.find({}, (err, data) => {
+        if (!err) {
+            console.log("tweet data=>", data);
+            res.status(200).send({
+                tweets: data,
+            });
+        }
+        else {
+            console.log("error : ", err);
+            res.status(500).send("error");
+        }
+    })
 
 });
 

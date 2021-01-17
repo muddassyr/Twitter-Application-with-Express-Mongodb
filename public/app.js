@@ -134,42 +134,58 @@ function logIn() {
 
 // }
 
+
+
 const post = () => {
 
-    // let tweetText = document.getElementById("userPost").value;
-    // const Http = new XMLHttpRequest();
-    // Http.open("POST", url + "/postTweets");
-    // Http.setRequestHeader("Content-Type", "application/json");
-
-    // // Http.send(JSON.stringify(user));
-    // Http.send(JSON.stringify({
-    //     // email: email,
+    let tweetText = document.getElementById("userPost").value;
+    // let tweets = {
     //     tweetText: tweetText,
-    // }));
 
-    // Http.onreadystatechange = (e) => {
-    //     if (Http.readyState === 4) {
-    //         jsonRes = JSON.parse((Http.responseText));
-    //         console.log("posted success");
-    //         document.getElementById("userPost").innerHTML = "";
-    //     }
     // }
-    axios({
-        method: 'post',
-        url: url + "/postTweets",
-        data1: {
-            //  email : document.getElementById("email").value,
-            tweetText: document.getElementById("userPost").value,
+    const Http = new XMLHttpRequest();
+    Http.open("POST", url + "/postTweets");
+    Http.setRequestHeader("Content-Type", "application/json");
 
+    // Http.send(JSON.stringify(tweets));
+    // Http.send(JSON.stringify(tweetText));
+    // Http.send((tweetText));
+    Http.send(JSON.stringify({
+        tweetText: tweetText,
+    }));
+
+    Http.onreadystatechange = (e) => {
+        if (Http.readyState === 4) {
+            jsonRes = JSON.parse((Http.responseText));
+            console.log(jsonRes);
+            console.log("posted success");
+            console.log(jsonRes.mytweet);
+            // document.getElementById("userPost").innerHTML = "";
+            document.getElementById("userPost").innerHTML = jsonRes.mytweet;
         }
-    }).then((response) => {
-        console.log("posted success", response);
-        document.getElementById("userPost").innerHTML = "";
-    }, (error) => {
-        console.log(error);
-    });
-    return false;
+    }
+ 
+ 
+ 
+ 
+    // axios({
+    //     method: 'post',
+    //     url: url + "/postTweets",
+    //     data1: {
+    //         //  email : document.getElementById("email").value,
+    //         tweetText: document.getElementById("userPost").value,
+
+    //     }
+    // }).then((response) => {
+    //     console.log("posted success", response);
+    //     document.getElementById("userPost").innerHTML = "";
+    // }, (error) => {
+    //     console.log(error);
+    // });
+    // return false;
 }
+
+
 
 const getTweets = () => {
 
