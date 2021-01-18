@@ -1,5 +1,5 @@
 
-const url = "http://localhost:5000";
+const url = "https://own-project.herokuapp.com";
 
 // var url = "http://localhost:5000";
 var socket = io(url);
@@ -134,56 +134,44 @@ function logIn() {
 
 // }
 
+postBtn.addEventListener("click", () => {
 
 
-const post = () => {
+})
 
-    let tweetText = document.getElementById("userPost").value;
-    // let tweets = {
-    //     tweetText: tweetText,
 
-    // }
+const tweetme = () => {
+
+
     const Http = new XMLHttpRequest();
-    Http.open("POST", url + "/postTweets");
+    Http.open("POST", url + "/uploadTweet")
     Http.setRequestHeader("Content-Type", "application/json");
-
-    // Http.send(JSON.stringify(tweets));
-    // Http.send(JSON.stringify(tweetText));
-    // Http.send((tweetText));
     Http.send(JSON.stringify({
-        tweetText: tweetText,
-    }));
+        userPost: document.getElementById("userPost").value,
+    }))
 
-    Http.onreadystatechange = (e) => {
-        if (Http.readyState === 4) {
-            jsonRes = JSON.parse((Http.responseText));
-            console.log(jsonRes);
-            console.log("posted success");
-            console.log(jsonRes.mytweet);
-            // document.getElementById("userPost").innerHTML = "";
-            document.getElementById("userPost").innerHTML = jsonRes.mytweet;
-        }
-    }
- 
- 
- 
- 
-    // axios({
-    //     method: 'post',
-    //     url: url + "/postTweets",
-    //     data1: {
-    //         //  email : document.getElementById("email").value,
-    //         tweetText: document.getElementById("userPost").value,
 
-    //     }
-    // }).then((response) => {
-    //     console.log("posted success", response);
-    //     document.getElementById("userPost").innerHTML = "";
-    // }, (error) => {
-    //     console.log(error);
-    // });
-    // return false;
+    document.getElementById("userPost").value = "";
+
 }
+socket.on("NEW_POST", (newPost) => {
+
+
+    console.log("newPost ==> ", newPost);
+    var eachTweet = document.createElement("li");
+    eachTweet.setAttribute("class", "myClass");
+    eachTweet.innerHTML =
+        `<h4 class="userName">
+        ${newPost.name}
+    </h4> 
+    <p class="userPost">
+        ${newPost.userPost}
+    </p>`;
+    // console.log(`User: ${tweets[i]} ${tweets[i].userPosts[j]}`)
+    document.getElementById("posts").appendChild(eachTweet)
+})
+
+
 
 
 
@@ -202,12 +190,13 @@ const getTweets = () => {
 
 
                 var eachTweet = document.createElement("li");
+                eachTweet.setAttribute("class", "myClass");
                 eachTweet.innerHTML =
                     `<h4 class="userName">
                     ${data.tweets[i].name}
                 </h4> 
                 <p class="userPost">
-                    ${data.tweets[i].tweetText}
+                    ${data.tweets[i].userPost}
                 </p>`;
                 // console.log(`User: ${tweets[i]} ${tweets[i].userPosts[j]}`)
                 document.getElementById("posts").appendChild(eachTweet)
@@ -216,22 +205,6 @@ const getTweets = () => {
         }
     }
 }
-
-socket.on("NEW_POST", (newPost) => {
-
-
-    console.log("newPost ==> ", newPost);
-    var eachTweet = document.createElement("li");
-    eachTweet.innerHTML =
-        `<h4 class="userName">
-        ${newPost.name}
-    </h4> 
-    <p class="userPost">
-        ${newPost.tweetText}
-    </p>`;
-    // console.log(`User: ${tweets[i]} ${tweets[i].userPosts[j]}`)
-    document.getElementById("posts").appendChild(eachTweet)
-})
 
 
 

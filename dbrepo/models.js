@@ -51,7 +51,7 @@ var optModel = mongoose.model("opta" , optSchema);
 
 var tweetsSchema = new mongoose.Schema({
     "email": String,
-    "tweetText": String,
+    "userPost": String,
     "name": String,
     "createdOn": { "type": Date, "default": Date.now}
 })

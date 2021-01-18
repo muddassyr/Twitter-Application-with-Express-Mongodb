@@ -22,12 +22,31 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="socket.io.js"></script>
+    <style>
+        .myClass {
+            display: block !important;
+            list-style: none;
+            padding: 10px;
+            font-size: 18px;
+            /* padding: 10px; */
+            transform: rotate(180deg);
+
+
+        }
+
+        .haha {
+            font-size: 15px;
+            padding-left: 10px;
+            transform: rotate(180deg);
+        }
+    </style>
 
 </head>
 
 <!-- <body onload="getProfile()"> -->
 <!-- <body  onload="getTweets()"> -->
-<body>
+
+<body onload="getTweets()">
     <div class="wrapper">
         <header>
             <div class="container">
@@ -124,23 +143,26 @@
                                         </div>
                                         <div class="post-st " style="margin-right: 40px; ">
                                             <div class="input-group input-group-lg">
-                                                <input id="userPost" type="text" class="form-control" placeholder="What's happening"
-                                                    aria-label="Sizing example input"
+                                                <!-- <form onsubmit="return post()"> -->
+                                                <input id="userPost" type="text" class="form-control"
+                                                    placeholder="What's happening" aria-label="Sizing example input"
                                                     aria-describedby="inputGroup-sizing-lg"
                                                     style="margin-right: 30px; ">
                                                 <!-- <button type="button" style=" border: 1 px solid #E44D3A;" class="btn btn-outline-dark">Tweet</button> -->
-                                                <button class="btn btn-primary"
+                                                <button id="postBtn" class="btn btn-primary"
                                                     style="background-color: #E44D3A; border:  2px solid #E44D3A;"
-                                                     onclick="return post()">Tweet</button>
+                                                    onclick="tweetme()">Tweet</button>
+                                                <!-- </form> -->
                                             </div>
-                                            <div class="posts__container">
 
-                                                <ul id="posts">
-                                        
+                                            <!-- <div class="posts__contxainer" style="display: block !important;"> -->
+                                            <div style="display: block !important;">
+                                                <ul class="haha" id="posts">
+
                                                 </ul>
-                                                <div id="myPost">
+                                                <div style="display: block !important; " id="myPost">
                                                 </div>
-                                              </div>
+                                            </div>
                                         </div>
                                         <!-- <div class="post-st">
                                             <ul>
@@ -176,16 +198,14 @@
         </main>
 
     </div>
-    <script src="app.js">
-       
-    </script>
 </body>
+<script src="app.js"></script>
 
 <script>
-     console.log('on loaded')
-            var user = localStorage.getItem('current_user')
-            console.log(user)
-            document.getElementById('resUserName').innerHTML = JSON.parse(user).name
+    // console.log('on loaded')
+    var user = localStorage.getItem('current_user')
+    // console.log(user)
+    document.getElementById('resUserName').innerHTML = JSON.parse(user).name
 </script>
 
 </html>
