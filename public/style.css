@@ -26,7 +26,8 @@ body {
 }
 #msform fieldset {
 	/* background: white; */
-	background: #069FFF;
+	/* background: #069FFF; */
+	background: #E44D3A;
     color: white;
     border: 0 none;
 	border-radius: 3px;

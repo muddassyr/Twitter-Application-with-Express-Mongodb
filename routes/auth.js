@@ -2,11 +2,11 @@ var express = require('express');
 var bcrypt = require('bcrypt-inzi');
 var jwt = require('jsonwebtoken');
 var postmark = require('postmark');
-var { SERVER_SECRET } = require("../core/index")
+var { SERVER_SECRET, CLIENT_SEC } = require("../core/index")
 // var SERVER_SECRET = process.env.SECRET || "1234";
 
 // var client = new postmark.Client("ENTER YOUR POSTMARK TOKEN") 
-var client = new postmark.Client("78f129ec-7f98-474a-a27b-5c702452ac2b") 
+var client = new postmark.Client(CLIENT_SEC)
 
 var { userModel, optModel } = require("../dbrepo/models");
 console.log("userModels: ", userModel)
@@ -317,7 +317,7 @@ router.post("/forgot-password-step-2", (req, res, next) => {
                             otpData = otpData[otpData.length - 1]
 
                             console.log("otpData: ", otpData);
-                            console.log("otp body code " , req.body.otp)
+                            console.log("otp body code ", req.body.otp)
                             const now = new Date().getTime();
                             const otpIat = new Date(otpData.createdOn).getTime(); // 2021-01-06T13:08:33.657+0000
                             const diff = now - otpIat; // 300000 5 minute

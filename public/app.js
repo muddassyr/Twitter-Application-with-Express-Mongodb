@@ -1,5 +1,6 @@
 
 const url = "https://own-project.herokuapp.com";
+// const url = "http://localhost:5000";
 
 // var url = "http://localhost:5000";
 var socket = io(url);
@@ -91,7 +92,7 @@ function logIn() {
             console.log(Http.responseText);
             let jsonRes = JSON.parse(Http.responseText);
             console.log(jsonRes)
-            console.log("name ", jsonRes.user.name)
+            // console.log("name ", jsonRes.user.name)
             // console.log("name ",jsonRes.name)
 
             if (Http.status === 200) {
@@ -104,7 +105,7 @@ function logIn() {
 
             }
             else {
-                alert(jsonRes.message);
+                alert(jsonRes);
             }
 
         }
