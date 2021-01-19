@@ -225,7 +225,7 @@ function passForgot() {
     }).then((response) => {
         document.getElementById("forgotPassRes").style.display = "initial";
         document.getElementById("forgotPassRes").innerHTML = JSON.stringify(response.message);
-        alert(JSON.stringify(response.message));
+        alert((response.message));
         localStorage.setItem("forgot_email", document.getElementById("email").value);
         window.location.href = "forgot_password_sterp_2.html";
     }, (error) => {

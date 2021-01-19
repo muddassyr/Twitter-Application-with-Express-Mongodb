@@ -324,7 +324,7 @@ router.post("/forgot-password-step-2", (req, res, next) => {
 
                             console.log("diff: ", diff);
 
-                            if (otpData.optCode === req.body.otp && diff < 300000000000000) { // correct otp code
+                            if (otpData.optCode === req.body.otp && diff < 300000) { // correct otp code
                                 otpData.remove()
 
                                 bcrypt.stringToHash(req.body.newPassword).then(function (hash) {
