@@ -214,6 +214,21 @@ app.get("/getTweets", (req, res, next) => {
     })
 });
 
+app.get("/userTweets", (req, res, next) => {
+    console.log("my tweets user=>", req.body);
+    tweetsModel.find({ email: req.body.jToken.email }, (err, data) => {
+        if (!err) {
+            console.log("user own tweets", data);
+            res.status(200).send({
+                tweets: data,
+            });
+        }
+        else {
+            console.log("error : ", err);
+            res.status(500).send("error");
+        }
+    })
+});
 
 const PORT = process.env.PORT || 5000;
 

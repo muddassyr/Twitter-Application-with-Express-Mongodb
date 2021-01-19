@@ -173,11 +173,44 @@ socket.on("NEW_POST", (newPost) => {
 })
 
 
+const userTweets = () => {
+    document.getElementById("posts").innerHTML = "";
+    const Http = new XMLHttpRequest();
+    Http.open("GET", url + "/userTweets");
+    Http.send();
+    Http.onreadystatechange = (e) => {
+        if (Http.readyState === 4) {
+            let jsonRes = JSON.parse(Http.responseText)
+            // console.log(jsonRes);
+            for (let i = 0; i < jsonRes.tweets.length; i++) {
+                // console.log(`this is ${i} tweet = ${jsonRes.tweets[i].createdOn}`);
+
+                var eachTweet = document.createElement("li");
+                eachTweet.setAttribute("class", "myClass");
+
+                eachTweet.innerHTML =
+                    `<h4 class="userName">
+                    ${jsonRes.tweets[i].name}
+                </h4> 
+            
+                <p class="userPost">
+                    ${jsonRes.tweets[i].userPost}
+                </p>`;
+
+                // console.log(`User: ${tweets[i]} ${tweets[i].userPosts[j]}`)
+                document.getElementById("posts").appendChild(eachTweet)
+
+            }
+        }
+    }
+}
+
 
 
 
 const getTweets = () => {
 
+    document.getElementById("posts").innerHTML = "";
 
     const Http = new XMLHttpRequest();
     Http.open("GET", url + "/getTweets");
