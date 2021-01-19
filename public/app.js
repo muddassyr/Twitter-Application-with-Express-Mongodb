@@ -89,9 +89,9 @@ function logIn() {
 
     Http.onreadystatechange = (e) => {
         if (Http.readyState === 4) {
-            console.log(Http.responseText);
+            // console.log(Http.responseText);
             let jsonRes = JSON.parse(Http.responseText);
-            console.log(jsonRes)
+            // console.log(jsonRes)
             // console.log("name ", jsonRes.user.name)
             // console.log("name ",jsonRes.name)
 
@@ -105,7 +105,7 @@ function logIn() {
 
             }
             else {
-                alert(jsonRes);
+                alert(jsonRes.message);
             }
 
         }
