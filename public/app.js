@@ -146,12 +146,7 @@ function getProfile() {
 
 }
 
-postBtn.addEventListener("click", () => {
 
-
-})
-
-document.getElementById("uploadBtn").style.display = "none";
 
 
 function previewFile() {
