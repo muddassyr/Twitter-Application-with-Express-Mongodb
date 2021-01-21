@@ -6,7 +6,7 @@ const url = "https://own-project.herokuapp.com";
 var socket = io(url);
 
 socket.on('connect', function () {
-    console.log("I am connected");
+    // console.log("I am connected");
 });
 function signUp() {
     var name = document.getElementById("name").value;
@@ -21,7 +21,7 @@ function signUp() {
         phone: phone,
         password: password
     }
-    console.log(user);
+    // console.log(user);
 
 
     const Http = new XMLHttpRequest();
@@ -33,8 +33,8 @@ function signUp() {
 
         if (Http.readyState === 4) {
             let jsonRes = JSON.parse(Http.responseText)
-            console.log(Http.status);
-            console.log(jsonRes);
+            // console.log(Http.status);
+            // console.log(jsonRes);
             if (Http.status === 200) {
                 alert(jsonRes.message);
                 window.location.href = "login.html";
@@ -80,7 +80,7 @@ function logIn() {
         email: email,
         password: password,
     }
-    console.log(user);
+    // console.log(user);
 
     const Http = new XMLHttpRequest();
     Http.open("POST", url + "/auth/login");
@@ -139,7 +139,7 @@ function getProfile() {
         }
         getTweets();
     }, (error) => {
-        console.log(error.message);
+        // console.log(error.message);
         window.location.href = "./login.html"
         // console.log("this is error", error);
     });
@@ -152,6 +152,8 @@ postBtn.addEventListener("click", () => {
 })
 
 document.getElementById("uploadBtn").style.display = "none";
+
+
 function previewFile() {
     const preview = document.getElementById('dbImage');
 
@@ -188,7 +190,7 @@ const tweetme = () => {
 socket.on("NEW_POST", (newPost) => {
 
 
-    console.log("newPost ==> ", newPost);
+    // console.log("newPost  ", newPost);
     var eachTweet = document.createElement("li");
     eachTweet.setAttribute("class", "myClass");
     eachTweet.innerHTML =
@@ -275,7 +277,7 @@ const getTweets = () => {
 
 function passForgot() {
 
-    console.log("hggjghgh")
+    // console.log("hggjghgh")
 
     axios({
         method: 'post',
@@ -301,7 +303,7 @@ function passForgot() {
 
 function newPassword() {
 
-    console.log("hdjfahfj")
+    // console.log("hdjfahfj")
 
 
     const Http = new XMLHttpRequest();

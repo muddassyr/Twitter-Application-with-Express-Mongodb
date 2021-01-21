@@ -48,6 +48,62 @@
             margin-top: 70%;
             /* margin-bottom: 8%; */
         }
+        .img {
+            /* vertical-align: middle; */
+            width: 170px;
+            border-radius: 50%;
+            display: block;
+            margin: 8px auto;
+        }
+
+      
+
+        .opacityFile {
+            display: none;
+        }
+
+
+
+        .imageUpdate {
+            position: relative;
+            width: 100%;
+        }
+
+        .img {
+            opacity: 1;
+            display: block;
+            width: 100%;
+            height: auto;
+            transition: .5s ease;
+            backface-visibility: hidden;
+        }
+
+        .middle {
+            transition: .5s ease;
+            opacity: 0;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .imageUpdate:hover .img {
+            opacity: 0.3;
+        }
+
+        .imageUpdate:hover .middle {
+            opacity: 1;
+        }
+
+        .text {
+            background-color: #E44D3A;
+            color: white;
+            font-size: 10px;
+            padding: 5px 5px;
+        }
+
     </style>
 
 </head>
@@ -120,23 +176,37 @@
                                         <div class="user-profile">
                                             <div class="username-dt">
                                                 <div class="usr-pic">
-                                                    <!-- <img src="images/profilePic.PNG" alt=""> -->
 
                                                     <!-- <img id="dbImage" src="images/profilePic.PNG" alt=""> -->
-                                                    <img id="dbImage" src="images/randomPic.png" alt="">
+                                                    <!-- <img id="dbImage" src="images/randomPic.png" alt=""> -->
+                                                    <label class="filebutton">
+                                                        <div class="imageUpdate">
+                                                            <img class="img " id="dbImage" src="./images/randomPic.png"
+                                                                alt="John" id="profilePic">
+                                                            <div class="middle">
+                                                                <div class="text">Update Profile Photo</div>
+                                                            </div>
+
+                                                        </div>
+                                                        <span><input class="opacityFile" type="file" id="fileInput"
+                                                                name="myfile" onchange="upload(); previewFile()">
+                                                        </span>
+                                                    </label>
+
+
+
                                                 </div>
                                             </div>
 
 
-                                            <div class="userProfile">
+                                            <!-- <div class="userProfile">
                                                 <form class="userProfilePic" onsubmit="return upload()">
 
                                                     <input required type="file" style=" margin-top: 15%;" id="fileInput"
                                                         onchange="previewFile()">
-                                                    <!-- <input required type="file" id="fileInput"> -->
                                                     <button type="submit" id="uploadBtn"> Upload </button>
                                                 </form>
-                                            </div>
+                                            </div> -->
 
                                             <div class="user-specs">
                                                 <h3 id="resUserName"></h3>
@@ -144,21 +214,21 @@
                                             </div>
                                         </div>
                                         <ul class="user-fw-status">
-                                            <li>
+                                            <!-- <li>
                                                 <h4>Following</h4>
                                                 <span>34</span>
                                             </li>
                                             <li>
                                                 <h4>Followers</h4>
                                                 <span>155</span>
-                                            </li>
+                                            </li> -->
                                             <li>
                                                 <a onclick="userTweets()" href="#" title="">My
-                                                    Tweets</a>
+                                                    Profile</a>
                                             </li>
                                             <li>
-                                                <a onclick="getTweets()" href="#" title="">View
-                                                    all tweets</a>
+                                                <a onclick="getTweets()" href="#" title="">
+                                                    Home</a>
 
                                             </li>
                                         </ul>
