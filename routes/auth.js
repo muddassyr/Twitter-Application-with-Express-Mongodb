@@ -7,7 +7,7 @@ var { SERVER_SECRET, CLIENT_SEC } = require("../core/index")
 
 // var client = new postmark.Client("ENTER YOUR POSTMARK TOKEN") 
 var client = new postmark.Client(CLIENT_SEC)
-
+ 
 var { userModel, optModel } = require("../dbrepo/models");
 console.log("userModels: ", userModel)
 

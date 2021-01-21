@@ -1,11 +1,12 @@
 
-// var DBURI = { DBURI }
+
 var { DBURI } = require("../core/index")
 
 
 var mongoose = require('mongoose')
 
 let dbURI = DBURI;
+
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.connection.on('connected', function () {
@@ -37,6 +38,7 @@ var userSchema = new mongoose.Schema({
     "email": String,
     "phone": String,
     "password": String,
+    "profileUrl": String,
     "createdOn": { "type": Date, "default": Date.now },
     "activeSince": Date
 });

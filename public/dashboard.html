@@ -11,11 +11,11 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/line-awesome.css">
     <link rel="stylesheet" type="text/css" href="css/line-awesome-font-awesome.min.css">
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> -->
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.min.css">
-    <link rel="stylesheet" type="text/css" href="lib/slick/slick.css">
-    <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css">
+    <!-- <link rel="stylesheet" type="text/css" href="lib/slick/slick.css"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="lib/slick/slick-theme.css"> -->
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/responsive.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -39,14 +39,25 @@
             padding-left: 10px;
             transform: rotate(180deg);
         }
+
+        .userProfile {
+            margin-top: 15%;
+        }
+
+        .userProfilePic {
+            margin-top: 70%;
+            /* margin-bottom: 8%; */
+        }
     </style>
 
 </head>
 
-<!-- <body onload="getProfile()"> -->
 <!-- <body  onload="getTweets()"> -->
 
-<body onload="getTweets()">
+<!-- <body onload="getTweets()"> -->
+
+<body onload="getProfile()">
+
     <div class="wrapper">
         <header>
             <div class="container">
@@ -77,13 +88,15 @@
                                     Logout
                                 </a>
                             </li>
-
-
                         </ul>
 
                     </nav>
                     <div class="menu-btn">
-                        <a href="#" title=""><i class="fa fa-bars"></i></a>
+                        <!-- <a href="#" title=""><i class="fa fa-bars"></i></a> -->
+                        <a onclick="logout()" href="#" title="">
+                            <span><i class="fa fa-sign-out" aria-hidden="true"></i></span>
+                            Logout
+                        </a>
                     </div>
                     <!-- <div class="user-account">
                         <div class="user-info">
@@ -107,10 +120,24 @@
                                         <div class="user-profile">
                                             <div class="username-dt">
                                                 <div class="usr-pic">
-                                                    <!-- <img src="images/user-pic.png" alt=""> -->
-                                                    <img src="images/profilePic.PNG" alt="">
+                                                    <!-- <img src="images/profilePic.PNG" alt=""> -->
+
+                                                    <!-- <img id="dbImage" src="images/profilePic.PNG" alt=""> -->
+                                                    <img id="dbImage" src="images/randomPic.png" alt="">
                                                 </div>
                                             </div>
+
+
+                                            <div class="userProfile">
+                                                <form class="userProfilePic" onsubmit="return upload()">
+
+                                                    <input required type="file" style=" margin-top: 15%;" id="fileInput"
+                                                        onchange="previewFile()">
+                                                    <!-- <input required type="file" id="fileInput"> -->
+                                                    <button type="submit" id="uploadBtn"> Upload </button>
+                                                </form>
+                                            </div>
+
                                             <div class="user-specs">
                                                 <h3 id="resUserName"></h3>
                                                 <span>Web Developer</span>
@@ -145,7 +172,10 @@
                                     <div class="post-topbar">
                                         <div class="user-picy">
                                             <!-- <img src="images/user-pic.png" alt=""> -->
-                                            <img src="images/smallprofile.PNG" alt="">
+                                            <img id="dbImageOne" style="border-radius: 50%;" src="images/randomPic.png"
+                                                alt="">
+                                            <!-- <img id="dbImageOne" style="border-radius: 50%;"
+                                                src="images/smallprofile.PNG" alt=""> -->
                                         </div>
                                         <div class="post-st " style="margin-right: 40px; ">
                                             <div class="input-group input-group-lg">
@@ -210,8 +240,73 @@
 <script>
     // console.log('on loaded')
     var user = localStorage.getItem('current_user')
+    var newUserEmail = JSON.parse(user).email;
+
     // console.log(user)
     document.getElementById('resUserName').innerHTML = JSON.parse(user).name
+
+    // const url = "https://own-project.herokuapp.com";
+    // const url = "http://localhost:5000";
+
+
+    function upload() {
+
+        var fileInput = document.getElementById("fileInput");
+        // console.log("fileInput: ", fileInput);
+        // console.log("fileInput: ", fileInput.files[0]);
+
+        let formData = new FormData();
+
+        formData.append("myFile", fileInput.files[0]);
+        formData.append("myName", "Khan");
+        formData.append("myDetails",
+            JSON.stringify({
+                // "email": localStorage.getItem("current_user"),   // this is how you send a json object along with file, you need to stringify (ofcourse you need to parse it back to JSON on server) your json Object since append method only allows either USVString or Blob(File is subclass of blob so File is also allowed)
+                "email": newUserEmail,   // this is how you send a json object along with file, you need to stringify (ofcourse you need to parse it back to JSON on server) your json Object since append method only allows either USVString or Blob(File is subclass of blob so File is also allowed)
+                "year": "2021"
+            })
+        );
+
+        axios({
+            method: 'post',
+            // url: "http://localhost:5000/upload",
+            url: "https://own-project.herokuapp.com/upload",
+            // url: url + "/upload",
+            data: formData,
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+            .then(res => {
+                // console.log(`upload Success` + res.data);
+
+
+                // console.log("upload success", res.data);
+                // console.log("message", res.data.message);
+                // console.log("photo url", res.data.url);
+                // document.getElementById("dbImage").innerHTML = res.data.url;
+                // document.getElementById("imgProfile").innerHTML = res.data.url;
+                // console.log(JSON.parse(res.data.url));
+                // document.getElementById("imgProfile").innerHTML = JSON.parse(res.data.url);
+                // console.log(JSON.stringify(res.data.url));
+
+                // document.getElementById("imageid").src="../template/save.png"
+                // document.getElementById("imgProfile").src = (res.data.url)
+                // document.getElementById("dbImage").src = JSON.stringify(res.data.url)
+
+                // var img = document.createElement("img");
+                // img.setAttribute("src", res.data.url);
+                // img.setAttribute("width", "100");
+                // // img.setAttribute("height", "100");
+                // img.setAttribute("alt", "user image");
+                // document.getElementById("imgProfile").appendChild(img);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+
+        return false;
+
+    }
+
 </script>
 
 </html>

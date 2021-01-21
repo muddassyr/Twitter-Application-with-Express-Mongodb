@@ -10,12 +10,38 @@ var socketIo = require("socket.io");
 var path = require('path')
 var http = require("http");
 
+
+//new code
+
+const fs = require('fs')
+const multer = require("multer");
+const admin = require("firebase-admin");
+
+const storage = multer.diskStorage({ // https://www.npmjs.com/package/multer#diskstorage
+    destination: './uploads/',
+    filename: function (req, file, cb) {
+        cb(null, `${new Date().getTime()}-${file.filename}.${file.mimetype.split("/")[1]}`)
+    }
+})
+var upload = multer({ storage: storage })
+
+var serviceAccount = require("./firebase.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://upload-photo-a5769.firebaseio.com"
+});
+
+const bucket = admin.storage().bucket("gs://upload-photo-a5769.appspot.com");
+
+
+
+
+
 var { userModel, tweetsModel } = require("./dbrepo/models")
 var authRoutes = require("./routes/auth")
 var { SERVER_SECRET } = require("./core/index")
 
 console.log("module: ", userModel);
-// var SERVER_SECRET = process.env.SECRET || "1234";
 
 var app = express();
 var server = http.createServer(app);
@@ -80,7 +106,7 @@ app.use(function (req, res, next) {
 app.get("/profile", (req, res, next) => {
     console.log(req.body)
 
-    userModel.findById(req.body.jToken.id, 'name email phone createdOn',
+    userModel.findById(req.body.jToken.id, 'name email phone profileUrl createdOn',
         function (err, doc) {
             if (!err) {
                 res.send({
@@ -94,25 +120,6 @@ app.get("/profile", (req, res, next) => {
             }
         })
 })
-
-// var tweetsS = []
-
-
-// app.post("/postTweets", (req, res, next) => {
-
-//     tweetsS.push({
-//         userName: req.body.userName,
-//         userPost: req.body.userPost,
-//     })
-//     res.send(tweets);
-
-//     io.emit("NEW_POST", JSON.stringify(tweetsS[tweetsS.length - 1]))
-// })
-
-// app.get("/tweets", (req, res, next) => {
-//     res.send(tweetsS);
-// });
-
 
 
 
@@ -229,6 +236,70 @@ app.get("/userTweets", (req, res, next) => {
         }
     })
 });
+
+
+app.post("/upload", upload.any(), (req, res, next) => {
+    console.log(req.body.myDetails);
+    userDetails = JSON.parse(req.body.myDetails)
+
+    console.log("user details are  ", userDetails);
+    console.log("user details email  ===== ", userDetails.email);
+
+    bucket.upload(
+        req.files[0].path,
+
+        function (err, file, apiResponse) {
+            if (!err) {
+
+                // https://googleapis.dev/nodejs/storage/latest/Bucket.html#getSignedUrl
+                file.getSignedUrl({
+                    action: 'read',
+                    expires: '03-09-2491'
+                }).then((urlData, err) => {
+                    if (!err) {
+                        console.log("public downloadable url: ", urlData[0]) // this is public downloadable url 
+                        console.log("my email is => ", userDetails.email);
+                        userModel.findOne({ email: userDetails.email }, {}, (err, user) => {
+                            if (!err) {
+                                console.log("user is ===>", user);
+                                user.update({ profileUrl: urlData[0] }, (err, updatedUrl) => {
+                                    if (!err) {
+                                        res.status(200).send({
+                                            message: "profile picture succesfully uploaded",
+                                            url: user.updatedUrl,
+                                        })
+                                        console.log("succesfully uploaded");
+                                    }
+                                    else {
+                                        res.status(500).send({
+                                            message: "an error occured" + err,
+                                        })
+                                        console.log("error occured whhile uploading");
+                                    }
+
+                                })
+                            }
+                        })
+                        try {
+                            fs.unlinkSync(req.files[0].path)
+                            //file removed
+                            return;
+                        } catch (err) {
+                            console.error(err)
+                        }
+                        // res.send("Ok");/
+                    }
+                })
+            } else {
+                console.log("err: ", err)
+                res.status(500).send();
+            }
+        });
+})
+
+
+
+
 
 const PORT = process.env.PORT || 5000;
 

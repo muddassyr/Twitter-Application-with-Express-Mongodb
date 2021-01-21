@@ -113,32 +113,62 @@ function logIn() {
     return false;
 }
 
-// function getProfile(){
-//     console.log("jdshffjds");
-//     axios({
+function getProfile() {
+    // console.log("test");
+    axios({
 
-//         method: 'get',
-//         // url: "http://localhost:5000/profile",
-//         // url: "/profile",
-//         url: url+"/profile",
+        method: 'get',
+        // url: "http://localhost:5000/profile",
+        // url: "/profile",
+        url: url + "/profile",
 
-//     }).then((response) => {
-//         console.log(response.data);
-//         console.log("sakjfddsjfkjdlkldj",response.data);
-//         document.getElementById('resUserName').innerHTML = response.data.profile.name
-//         getTweets();
-//     }, (error) => {
-//         console.log(error.message);
-//         // window.location.href = "./login.html"
-//         console.log("this is error",error);
-//     });
+    }).then((response) => {
+        // console.log(response.data);
+        // console.log("get profile console", response.data);
+        document.getElementById('resUserName').innerHTML = response.data.profile.name
 
-// }
+        if (!response.data.profile.profileUrl) {
+
+            document.getElementById('dbImage').src = 'images/randomPic.png'
+            document.getElementById('dbImageOne').src = 'images/randomPic.png'
+        }
+        else {
+
+            document.getElementById('dbImage').src = response.data.profile.profileUrl
+            document.getElementById('dbImageOne').src = response.data.profile.profileUrl
+        }
+        getTweets();
+    }, (error) => {
+        console.log(error.message);
+        window.location.href = "./login.html"
+        // console.log("this is error", error);
+    });
+
+}
 
 postBtn.addEventListener("click", () => {
 
 
 })
+
+document.getElementById("uploadBtn").style.display = "none";
+function previewFile() {
+    const preview = document.getElementById('dbImage');
+
+    const file = document.querySelector('input[type=file]').files[0];
+    const reader = new FileReader();
+
+    reader.addEventListener("load", function () {
+        // convert image file to base64 string
+        preview.src = reader.result;
+    }, false);
+
+    if (file) {
+        reader.readAsDataURL(file);
+        document.getElementById("uploadBtn").style.display = "initial";
+        document.getElementById("uploadTxt").innerHTML = "Press upload to upload profile picture";
+    }
+}
 
 
 const tweetme = () => {
@@ -219,7 +249,7 @@ const getTweets = () => {
         if (Http.readyState === 4) {
 
             let data = JSON.parse((Http.responseText));
-            console.log(data);
+            // console.log(data);
             for (let i = 0; i < data.tweets.length; i++) {
 
 
