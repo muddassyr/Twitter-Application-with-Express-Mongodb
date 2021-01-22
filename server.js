@@ -135,7 +135,7 @@ app.post("/uploadTweet", (req, res, next) => {
 
         return;
     };
-    userModel.findById(req.body.jToken.id, 'name email',
+    userModel.findById(req.body.jToken.id, 'name email profileUrl',
         (err, user) => {
             if (!err) {
                 console.log("tweet user : " + user);
@@ -143,15 +143,16 @@ app.post("/uploadTweet", (req, res, next) => {
                     email: user.email,
                     userPost: req.body.userPost,
                     name: user.name,
+                    profileUrl: user.profileUrl,
                 }).then((data) => {
                     console.log("Tweet created: " + data),
                         res.status(200).send({
                             message: "tweet created",
                             name: user.name,
-                            // userPost: data.userPost,
+                            profileUrl: user.profileUrl,
                             email: user.email,
                         });
-                    io.emit("NEW_POST", data);
+                    io.emit("NEW_POST", { data: data, profileUrl: user.profileUrl });
                 }).catch((err) => {
                     res.status(500).send({
                         message: "an error occured : " + err,
@@ -209,7 +210,7 @@ app.get("/getTweets", (req, res, next) => {
 
     tweetsModel.find({}, (err, data) => {
         if (!err) {
-            console.log("tweet data=>", data);
+            // console.log("data is tweets = > " , data);
             res.status(200).send({
                 tweets: data,
             });
@@ -222,7 +223,7 @@ app.get("/getTweets", (req, res, next) => {
 });
 
 app.get("/userTweets", (req, res, next) => {
-    console.log("my tweets user=>", req.body);
+    // console.log("my tweets user=>", req.body);
     tweetsModel.find({ email: req.body.jToken.email }, (err, data) => {
         if (!err) {
             console.log("user own tweets", data);
@@ -239,11 +240,11 @@ app.get("/userTweets", (req, res, next) => {
 
 
 app.post("/upload", upload.any(), (req, res, next) => {
-    console.log(req.body.myDetails);
+    // console.log(req.body.myDetails);
     userDetails = JSON.parse(req.body.myDetails)
 
-    console.log("user details are  ", userDetails);
-    console.log("user details email  ===== ", userDetails.email);
+    // console.log("user details are  ", userDetails);
+    // console.log("user details email  ===== ", userDetails.email);
 
     bucket.upload(
         req.files[0].path,
@@ -257,10 +258,15 @@ app.post("/upload", upload.any(), (req, res, next) => {
                     expires: '03-09-2491'
                 }).then((urlData, err) => {
                     if (!err) {
-                        console.log("public downloadable url: ", urlData[0]) // this is public downloadable url 
-                        console.log("my email is => ", userDetails.email);
+                        // console.log("public downloadable url: ", urlData[0]) // this is public downloadable url 
+                        // console.log("my email is => ", userDetails.email);
                         userModel.findOne({ email: userDetails.email }, {}, (err, user) => {
                             if (!err) {
+                                tweetsModel.update({ email: userDetails.email }, { profileUrl: urlData[0] }, (err, tweetUrl) => {
+                                    if (!err) {
+                                        console.log("Url is also uploaded on tweets model");
+                                    }
+                                })
                                 console.log("user is ===>", user);
                                 user.update({ profileUrl: urlData[0] }, (err, updatedUrl) => {
                                     if (!err) {

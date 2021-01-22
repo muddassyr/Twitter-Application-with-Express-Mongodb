@@ -125,6 +125,7 @@ function getProfile() {
     }).then((response) => {
         // console.log(response.data);
         // console.log("get profile console", response.data);
+
         document.getElementById('resUserName').innerHTML = response.data.profile.name
 
         if (!response.data.profile.profileUrl) {
@@ -162,7 +163,7 @@ function previewFile() {
 
     if (file) {
         reader.readAsDataURL(file);
-        document.getElementById("uploadBtn").style.display = "initial";
+        // document.getElementById("uploadBtn").style.display = "initial";
         document.getElementById("uploadTxt").innerHTML = "Press upload to upload profile picture";
     }
 }
@@ -185,15 +186,18 @@ const tweetme = () => {
 socket.on("NEW_POST", (newPost) => {
 
 
-    // console.log("newPost  ", newPost);
+    // console.log("newPost  ", newPost.profileUrl);
     var eachTweet = document.createElement("li");
     eachTweet.setAttribute("class", "myClass");
     eachTweet.innerHTML =
-        `<h4 class="userName">
-        ${newPost.name}
+
+        `
+        <img src="${newPost.profileUrl}" alt="Avatar" class="avatar">
+        <h4 class="userName">
+        ${newPost.data.name}
     </h4> 
     <p class="userPost">
-        ${newPost.userPost}
+        ${newPost.data.userPost}
     </p>`;
     // console.log(`User: ${tweets[i]} ${tweets[i].userPosts[j]}`)
     document.getElementById("posts").appendChild(eachTweet)
@@ -210,13 +214,14 @@ const userTweets = () => {
             let jsonRes = JSON.parse(Http.responseText)
             // console.log(jsonRes);
             for (let i = 0; i < jsonRes.tweets.length; i++) {
-                // console.log(`this is ${i} tweet = ${jsonRes.tweets[i].createdOn}`);
 
                 var eachTweet = document.createElement("li");
                 eachTweet.setAttribute("class", "myClass");
 
                 eachTweet.innerHTML =
-                    `<h4 class="userName">
+                    `
+                    <img src="${jsonRes.tweets[i].profileUrl}" alt="Avatar" class="avatar"> 
+                    <h4 class="userName">
                     ${jsonRes.tweets[i].name}
                 </h4> 
             
@@ -248,12 +253,16 @@ const getTweets = () => {
             let data = JSON.parse((Http.responseText));
             // console.log(data);
             for (let i = 0; i < data.tweets.length; i++) {
-
-
+                // console.log("tweets are = > ", data.tweets[i]);
+                // console.log("tweets are = > ", data.tweets[i]);
+                // console.log(`this is ${i} tweet = ${data.tweets[i].createdOn}`);
+                // console.log("tweets=>" , data.tweets[i].profileUrl);
                 var eachTweet = document.createElement("li");
                 eachTweet.setAttribute("class", "myClass");
                 eachTweet.innerHTML =
-                    `<h4 class="userName">
+                    `
+                    <img src="${data.tweets[i].profileUrl}" alt="profile" class="avatar">                    
+                    <h4 class="userName">
                     ${data.tweets[i].name}
                 </h4> 
                 <p class="userPost">
