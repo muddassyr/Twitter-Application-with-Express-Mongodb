@@ -262,7 +262,7 @@ app.post("/upload", upload.any(), (req, res, next) => {
                         // console.log("my email is => ", userDetails.email);
                         userModel.findOne({ email: userDetails.email }, {}, (err, user) => {
                             if (!err) {
-                                tweetsModel.update({ email: userDetails.email }, { profileUrl: urlData[0] }, (err, tweetUrl) => {
+                                tweetsModel.updateMany({ email: userDetails.email }, { profileUrl: urlData[0] }, (err, tweetUrl) => {
                                     if (!err) {
                                         console.log("Url is also uploaded on tweets model");
                                     }
